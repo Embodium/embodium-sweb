@@ -1,6 +1,6 @@
 {
-  "name": "embodium-sweb",
-  "version": "0.0.0",
+  "name": "@embodium-sweb/frontend",
+  "version": "0.0.1",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -15,6 +15,7 @@
   "devDependencies": {
     "eslint-config-custom": "workspace:*",
     "prettier": "latest",
+    "svelte": "^3.54.0",
     "turbo": "latest"
   },
   "engines": {

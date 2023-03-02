@@ -1,8 +1,9 @@
 <script lang="ts">
- 
+ import { WebLensInit } from "$lib/web-lens";
+ import { LensTrigger } from "$lib/trigger";
 </script>
 
-<h1>
-  Web Lens Emulation App
-</h1>
-
+<span>
+  <LensTrigger />
+  <WebLensInit />
+</span>

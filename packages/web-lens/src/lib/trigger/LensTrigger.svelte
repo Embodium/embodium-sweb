@@ -1,5 +1,5 @@
 <script lang="ts">
- import { toggle_lens } from '$lib/toggle_lens';
+ import { lens_api } from '../web-lens/lens-api';
  export let override_icon = false;
 
  let processing_command = false;
@@ -9,7 +9,7 @@
      "key_maps": [17, 76],
      "command": () => {
        console.log('Handling Command', "Trigger Lens");
-       toggle_lens();  
+       lens_api.toggle_lens();  
      }
    }
  }
@@ -28,7 +28,6 @@
      const matched = Object.values(command_maps)
 			   .filter(command_desc =>  match_key_map(command_desc))
 			   .filter(x => x);
-     // console.log("Matched", matched);
      if (matched.length) {
        processing_command = true;
        key_maps = {};
@@ -40,20 +39,12 @@
      processing_command = false;
    }
  }
- 
- const handle_key_up = (event: KeyboardEvent) => {
-   // console.log('Key Up', event.keyCode);
-   // if (!processing_command) {
-   // }
-   // key_maps = {};
-   // processing_command = false;
- }
 </script>
 
-<svelte:body on:keydown={handle_key_down} on:keyup={handle_key_up} />
+<svelte:body on:keydown={handle_key_down} />
 
 <button class="trigger-container"
-	on:click={toggle_lens}>
+	on:click={lens_api.toggle_lens}>
   {#if override_icon}
     <slot />
   {:else}

@@ -6,4 +6,6 @@
 <span>
   <LensTrigger />
   <WebLensInit />
+
+  <WebLensInit />
 </span>

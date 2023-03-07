@@ -1,46 +1,33 @@
+<script lang="ts" context="module">
+ // Used to control mounting a strictly single instance of Web Lens.
+ let mounted = false;
+</script>
+
 <script lang="ts">
  import "./Custom.svelte";
  import { onMount } from "svelte";
  import { lens_store } from "./store";
- 
- let mounted = false;
- 
- const onClose = () => {
-   lens_store.accessible.set(false);
- };
+ import { init_api } from "./lens-api";
 
+ let instance_mounted = false;
+ 
  const accessible = lens_store.accessible;
-
- const handle_keyup = (event: KeyboardEvent) => {
-   if ((event.type ?? "").trim() === "keyup" && (event.key ?? "").trim().toLowerCase() === "escape") {
-     $accessible = false;
-   }
- }
-
- const on_close = () => {
-   $accessible = false;
- }
  
  onMount(() => {
-   mounted = true;
-
-   (globalThis as any)['embodium'] = {
-        ...(globalThis as any)['embodium'],
-        ['web-lens']: {
-            ...(globalThis as any)['embodium']?.['web-lens'],
-            toggle_lens: () => {
-	      $accessible = !$accessible;
-            }
-        }
+   init_api();
+   if(!mounted) {
+     mounted = true;
+     instance_mounted = true;
+   } else {
+     instance_mounted = false;
+     console.log("[WebLensInit]", "Mount ignored as another instance is already mounted");
    }
  });
  
 </script>
 
-<svelte:body on:keyup={handle_keyup} />
-
-{#if mounted}
-  <web-lens id="web-lens" class={!$accessible ? "hidden" : ""} on:close={on_close}  on:keyup={handle_keyup}>
+{#if instance_mounted}
+  <web-lens id="web-lens" class={!$accessible ? "hidden" : ""}>
     <slot></slot>
   </web-lens> 
 {/if}

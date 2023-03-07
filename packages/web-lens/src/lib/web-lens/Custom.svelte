@@ -1,16 +1,58 @@
 <svelte:options tag="web-lens" />
 
 <script lang="ts">
- import styles from "./custom.scss?inline";
- import { toggle_lens } from "$lib/toggle_lens";
+ import { onMount } from "svelte";
+ import { lens_store } from "./store";
+ import { lens_api } from "./lens-api";
 
  let cssKeep = "";
+ let mounted = false;
  const handler = (eventTarget?: Element) => {
    eventTarget?.addEventListener("toggle_lens", () => {
-     toggle_lens();
+     lens_api.toggle_lens();
    });
  }
+
+ const onClose = () => {
+   lens_store.accessible.set(false);
+ };
+
+ const accessible = lens_store.accessible;
+
+ const handle_keyup = (event: KeyboardEvent) => {
+   if ((event.type ?? "").trim() === "keyup" && (event.key ?? "").trim().toLowerCase() === "escape") {
+     $accessible = false;
+   }
+ }
+ 
+ const handle_message = (message: MessageEvent) => {
+   console.log("Message Received");
+   if(message.data?.name?.trim().toLowerCase() === "toggle_lens") {
+     lens_api.toggle_lens();
+   }
+ }
+ 
+ // const setup_toggle = () => {
+ //   (globalThis as any)['embodium'] = {
+ //     ...(globalThis as any)['embodium'],
+ //     ['web-lens']: {
+ //       ...(globalThis as any)['embodium']?.['web-lens'],
+ //       toggle_lens: () => {
+ // 	 $accessible = !$accessible;
+ //       }
+ //     }
+ //   }
+ // };
+ // 
+ // onMount(() => {
+ //   setup_toggle();
+ // });
+ // 
 </script>
+
+<svelte:window on:message={handle_message}  />
+<svelte:body on:keyup={handle_keyup} />
+
 <span style="display: none;" class={cssKeep}>It's a Hack to prevent svelte from omitting component-scoped styles. </span>
 <slot name="header">
   <header class="header-root">Header</header>
@@ -36,11 +78,11 @@
    left: 0;
    background-color: yellow;
  }
-
+ 
  :host(.hidden), :host([hidden]) {
    display: none;
  }
-
+ 
  .header-root {
    
  }
